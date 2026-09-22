@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "nombre": "Rodrigo",
+    "apellido": "Palacio",
+    "email": "rodrigo.palacio@email.com",
+    "password": "katanas123",
+    "direccion": "Av. Corrientes 1450, CABA",
+    "activo": true
+  },
+  {
+    "id": 2,
+    "nombre": "Martina",
+    "apellido": "Gomez",
+    "email": "martina.gomez@email.com",
+    "password": "samurai456",
+    "direccion": "San Martin 820, Rosario",
+    "activo": true
+  },
+  {
+    "id": 3,
+    "nombre": "Lucas",
+    "apellido": "Fernandez",
+    "email": "lucas.fernandez@email.com",
+    "password": "ninja789",
+    "direccion": "Belgrano 310, Cordoba",
+    "activo": false
+  },
+  {
+    "id": 4,
+    "nombre": "Camila",
+    "apellido": "Rossi",
+    "email": "camila.rossi@email.com",
+    "password": "dojo2026",
+    "direccion": "Mitre 560, Mendoza",
+    "activo": true
+  }
+]

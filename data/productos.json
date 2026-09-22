@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "nombre": "Auriculares Bluetooth ProSound X3",
+    "descripcion": "Auriculares inalambricos importados con estuche de carga y cancelacion de ruido.",
+    "categoria": "electronica",
+    "precio": 45000,
+    "stock": 12,
+    "imagen": "auriculares-prosound-x3.jpg",
+    "disponible": true
+  },
+  {
+    "id": 2,
+    "nombre": "Smartwatch FitTime S9",
+    "descripcion": "Reloj inteligente con monitor cardiaco, contador de pasos y notificaciones.",
+    "categoria": "electronica",
+    "precio": 78000,
+    "stock": 7,
+    "imagen": "smartwatch-fittime-s9.jpg",
+    "disponible": true
+  },
+  {
+    "id": 3,
+    "nombre": "Perfume Arabe Oud Al Malik",
+    "descripcion": "Fragancia arabe intensa con notas de oud, ambar y especias.",
+    "categoria": "perfumes arabes",
+    "precio": 62000,
+    "stock": 9,
+    "imagen": "perfume-oud-al-malik.jpg",
+    "disponible": true
+  },
+  {
+    "id": 4,
+    "nombre": "Perfume Arabe Layali Rose",
+    "descripcion": "Perfume importado con aroma dulce, floral y duradero.",
+    "categoria": "perfumes arabes",
+    "precio": 54000,
+    "stock": 11,
+    "imagen": "perfume-layali-rose.jpg",
+    "disponible": true
+  },
+  {
+    "id": 5,
+    "nombre": "Vaper CloudMax 8000",
+    "descripcion": "Vaper descartable importado con bateria recargable y sabor frutal.",
+    "categoria": "vapers",
+    "precio": 22000,
+    "stock": 20,
+    "imagen": "vaper-cloudmax-8000.jpg",
+    "disponible": true
+  },
+  {
+    "id": 6,
+    "nombre": "Vaper Mint Ice 5000",
+    "descripcion": "Vaper importado sabor menta helada, compacto y liviano.",
+    "categoria": "vapers",
+    "precio": 18500,
+    "stock": 0,
+    "imagen": "vaper-mint-ice-5000.jpg",
+    "disponible": false
+  }
+]
