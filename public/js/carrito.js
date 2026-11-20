@@ -1,4 +1,5 @@
 import { obtenerProductos, registrarCompra } from "./productosService.js";
+import { guardarResumenPedido, mostrarPedido, recuperarResumenPedido } from "./pedido.js";
 
 const contenedorCarrito = document.querySelector("#carrito-contenedor");
 const estadoCompra = document.querySelector("#estado-compra");
@@ -65,17 +66,22 @@ function renderizarCarrito() {
             <h2>Total: ${formatearPrecio(total)}</h2>
             <div class="acciones-carrito">
                 <a class="btn btn-katana" href="../">Agregar más productos</a>
-                ${estaLogueado() ? "" : '<a class="btn btn-katana" href="login.html?volver=carrito">Iniciar sesión para comprar</a>'}
+                ${estaLogueado() ? "" : '<a class="btn btn-katana" href="login.html?volver=carrito">Iniciar sesión para confirmar el pedido</a>'}
             </div>
             ${estaLogueado() ? `
                 <form id="formulario-compra" class="mt-3">
                     <label for="direccion" class="form-label">Dirección de entrega</label>
                     <input id="direccion" class="form-control mb-3" autocomplete="street-address" required>
                     <button class="btn btn-katana" type="submit" ${carrito.some(revisarArticulo) ? "disabled" : ""}>
-                        Confirmar compra
+                        Confirmar pedido
                     </button>
                 </form>` : ""}
         </div>`;
+
+    contenedorCarrito.querySelectorAll(".item-carrito").forEach((fila) => {
+        const producto = catalogo.get(Number(fila.dataset.productoId));
+        mostrarImagenProducto(fila.querySelector(".sin-imagen"), producto);
+    });
 
     const campoDireccion = contenedorCarrito.querySelector("#direccion");
     if (campoDireccion) campoDireccion.value = direccion;
@@ -120,7 +126,8 @@ contenedorCarrito.addEventListener("submit", async (evento) => {
     const carrito = obtenerCarrito();
     comprando = true;
     contenedorCarrito.querySelectorAll("button, input").forEach((control) => { control.disabled = true; });
-    estadoCompra.textContent = "Procesando compra…";
+    estadoCompra.textContent = "Registrando pedido…";
+    let pedido;
 
     try {
         await actualizarCatalogo();
@@ -130,11 +137,20 @@ contenedorCarrito.addEventListener("submit", async (evento) => {
             return;
         }
         const venta = await registrarCompra({
-            id_usuario: usuario.id,
             direccion: entrega,
             productos: carrito.map(({ id, cantidad }) => ({ id_producto: id, cantidad }))
-        });
-        estadoCompra.textContent = `Compra confirmada. Venta #${venta.id}. Total: ${formatearPrecio(venta.total)}.`;
+        }, usuario.token);
+        pedido = {
+            id: venta.id,
+            id_usuario: usuario.id,
+            direccion: venta.direccion,
+            total: venta.total,
+            productos: venta.productos.map(({ id_producto, cantidad, precio }) => ({
+                nombre: catalogo.get(id_producto)?.nombre ?? `Producto #${id_producto}`, cantidad, precio
+            }))
+        };
+        guardarResumenPedido(pedido);
+        estadoCompra.textContent = "";
         const comprados = new Map(carrito.map(({ id, cantidad }) => [id, cantidad]));
         const restantes = obtenerCarrito().map(({ id, cantidad }) => ({
             id, cantidad: cantidad - (comprados.get(id) ?? 0)
@@ -142,16 +158,32 @@ contenedorCarrito.addEventListener("submit", async (evento) => {
         guardarCarrito(restantes.filter(({ cantidad }) => cantidad > 0));
         direccion = "";
     } catch (error) {
-        estadoCompra.textContent = error.message;
+        if (error.status === 401) {
+            cerrarSesion();
+            crearNavbar();
+            estadoCompra.textContent = "Tu sesión ya no es válida. Volvé a iniciar sesión para continuar con tu carrito.";
+        } else {
+            estadoCompra.textContent = error.message;
+        }
     } finally {
         comprando = false;
-        renderizarCarrito();
+        if (pedido) {
+            actualizarContadorCarritoNavbar();
+            mostrarPedido(contenedorCarrito, pedido);
+        } else {
+            renderizarCarrito();
+        }
     }
 });
 
-try {
-    await actualizarCatalogo();
-    renderizarCarrito();
-} catch (error) {
-    contenedorCarrito.textContent = error.message;
+const pedidoAnterior = obtenerCarrito().length ? null : recuperarResumenPedido();
+if (pedidoAnterior) {
+    mostrarPedido(contenedorCarrito, pedidoAnterior);
+} else {
+    try {
+        if (obtenerCarrito().length) await actualizarCatalogo();
+        renderizarCarrito();
+    } catch (error) {
+        contenedorCarrito.textContent = error.message;
+    }
 }

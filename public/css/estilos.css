@@ -177,7 +177,7 @@ html {
     border-radius: 12px;
 }
 
-.item-carrito .sin-imagen {
+.item-carrito img, .item-carrito .sin-imagen {
     width: 90px;
     height: 90px;
     object-fit: cover;
@@ -261,7 +261,7 @@ html {
         grid-template-columns: 70px 1fr;
     }
 
-    .item-carrito .sin-imagen {
+    .item-carrito img, .item-carrito .sin-imagen {
         width: 70px;
         height: 70px;
     }
@@ -375,4 +375,22 @@ html {
 .footer-whatsapp:hover {
     background-color: #1fb556;
     color: #ffffff;
+}
+
+#form-admin[hidden] {
+    display: none;
+}
+
+.vista-previa-imagen img {
+    width: auto;
+    max-width: 100%;
+    max-height: 160px;
+    border-radius: 8px;
+}
+
+.resumen-pedido {
+    max-width: 44rem;
+    background-color: rgba(17, 17, 17, 0.96);
+    border: 1px solid #d4af37;
+    border-radius: 12px;
 }

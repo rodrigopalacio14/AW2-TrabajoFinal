@@ -13,15 +13,21 @@ function crearNavbar() {
             </li>
         `;
     }).join("");
-    const accionesUsuario = estaLogueado()
+    const usuario = obtenerUsuario();
+    const enlaceAdmin = usuario?.rol === "admin" ? `
+        <li class="nav-item">
+            <a class="nav-link" href="${basePath}pages/admin.html"${location.pathname.endsWith("/admin.html") ? ' aria-current="page"' : ""}>Panel de administración</a>
+        </li>
+    ` : "";
+    const accionesUsuario = usuario
         ? `
             <li class="nav-item">
-                <button class="btn btn-link nav-link" id="btn-logout" type="button">Cerrar sesion</button>
+                <button class="btn btn-link nav-link" id="btn-logout" type="button">Cerrar sesión</button>
             </li>
         `
         : `
             <li class="nav-item">
-                <a class="nav-link" href="${basePath}pages/login.html${location.pathname.endsWith("/carrito.html") ? "?volver=carrito" : ""}">Iniciar Sesion</a>
+                <a class="nav-link" href="${basePath}pages/login.html${location.pathname.endsWith("/carrito.html") ? "?volver=carrito" : ""}">Iniciar sesión</a>
             </li>
 
             <li class="nav-item">
@@ -41,6 +47,7 @@ function crearNavbar() {
                 <div class="collapse navbar-collapse" id="menuTresKatanas">
                     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         ${linksPaginas}
+                        ${enlaceAdmin}
                     </ul>
 
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">

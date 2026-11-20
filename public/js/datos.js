@@ -1,14 +1,16 @@
+const WHATSAPP_TIENDA = "5493517868252";
+
 const paginas = [
     {
         titulo: "Inicio",
         direccion: "index.html"
     },
     {
-        titulo: "Electronica",
+        titulo: "Electrónica",
         direccion: "pages/electronica.html"
     },
     {
-        titulo: "Perfumes Arabes",
+        titulo: "Perfumes árabes",
         direccion: "pages/perfumes.html"
     },
     {

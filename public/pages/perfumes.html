@@ -14,13 +14,18 @@
 
     <main class="container-fluid fondo-principal">
         <section class="container text-center py-5">
-            <h1 class="titulo-principal">Perfumes Arabes</h1>
+            <h1 class="titulo-principal">Perfumes árabes</h1>
         </section>
 
         <section class="container pb-5">
             <div class="mx-auto mb-4" style="max-width: 24rem">
-                <label class="form-label" for="categoria">Categoría</label>
-                <select class="form-select" id="categoria"><option value="">Todas las categorías</option></select>
+                <label class="form-label" for="orden-productos">Ordenar por</label>
+                <select class="form-select" id="orden-productos" disabled>
+                    <option value="nombre-asc">Nombre: A–Z</option>
+                    <option value="nombre-desc">Nombre: Z–A</option>
+                    <option value="precio-asc">Precio: de menor a mayor</option>
+                    <option value="precio-desc">Precio: de mayor a menor</option>
+                </select>
             </div>
             <p id="estado-catalogo" class="text-center" role="status">Cargando catálogo…</p>
             <div class="row justify-content-center g-4" id="productos" data-categoria="perfumes arabes"></div>

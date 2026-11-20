@@ -14,8 +14,12 @@ formularioLogin.addEventListener("submit", async (evento) => {
     try {
         const email = formularioLogin.querySelector("#email").value;
         const password = formularioLogin.querySelector("#password").value;
-        const { usuario } = await ingresar(email, password);
-        iniciarSesion(usuario);
+        const { usuario, token } = await ingresar(email, password);
+        iniciarSesion(usuario, token);
+        if (usuario.rol === "admin") {
+            location.href = "./admin.html";
+            return;
+        }
         location.href = volverAlCarrito ? "./carrito.html" : "../";
     } catch (error) {
         estadoLogin.textContent = error.message;

@@ -20,32 +20,33 @@
         <div class="card card-producto p-4" style="width: 32rem;">
             <h2 class="text-center titulo-seccion mb-4">Registro de Usuario</h2>
 
-            <form>
+            <form id="formulario-registro">
                 <div class="mb-3">
                     <label class="form-label" for="nombre">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre">
+                    <input type="text" class="form-control" id="nombre" required placeholder="Ingrese su nombre">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label" for="apellido">Apellido</label>
-                    <input type="text" class="form-control" id="apellido" placeholder="Ingrese su apellido">
+                    <input type="text" class="form-control" id="apellido" required placeholder="Ingrese su apellido">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="registro-email">Correo electronico</label>
-                    <input type="email" class="form-control" id="registro-email" placeholder="Ingrese su email">
+                    <label class="form-label" for="registro-email">Correo electrónico</label>
+                    <input type="email" class="form-control" id="registro-email" required placeholder="Ingrese su email">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="registro-password">Contrasena</label>
-                    <input type="password" class="form-control" id="registro-password" placeholder="Ingrese una contrasena">
+                    <label class="form-label" for="registro-password">Contraseña</label>
+                    <input type="password" class="form-control" id="registro-password" required placeholder="Ingrese una contrasena">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="fecha-nacimiento">Fecha de nacimiento</label>
-                    <input type="date" class="form-control" id="fecha-nacimiento">
+                    <label class="form-label" for="direccion">Dirección</label>
+                    <input type="text" class="form-control" id="direccion" autocomplete="street-address" required>
                 </div>
 
+                <p id="estado-registro" role="alert"></p>
                 <button type="submit" class="btn btn-katana w-100">Registrarse</button>
             </form>
         </div>
@@ -56,5 +57,6 @@
     <script src="../js/datos.js"></script>
     <script src="../js/titulo.js"></script>
     <script src="../componentes/footer.js"></script>
+    <script type="module" src="../js/registro.js"></script>
 </body>
 </html>

@@ -1,169 +1,51 @@
 # Tres Katanas
 
-Trabajo práctico de Aplicaciones Web 2 — Tercera etapa.
+Aplicaciones Web 2 ·
 
-Backend del e-commerce Tres Katanas, desarrollado con Node.js y Express. Los usuarios, productos y ventas se guardan en archivos JSON.
+Tres Katanas es una tienda de electrónica, perfumes árabes y vapers. Permite navegar por el catálogo, ordenar productos, armar un carrito y confirmar pedidos. El cliente puede coordinar el pago por WhatsApp tras elegir transferencia o efectivo. El panel de administración gestiona usuarios, productos y ventas.
 
 ## Cómo ejecutar
 
-Instalar las dependencias desde la carpeta del proyecto:
+Requisitos: Node.js 22 o posterior, npm y acceso de lectura y escritura a MongoDB Atlas desde la red utilizada.
+
+El proyecto carga la configuración de MongoDB y JWT desde el archivo `.env` en la raíz del repositorio.
+
+| Variable | Uso |
+| --- | --- |
+| `MONGODB_URI` | URI de conexión a la base de Atlas. |
+| `JWT_SECRET` | Clave privada para firmar y verificar tokens. |
 
 ```bash
 npm install
-```
-
-Iniciar el servidor:
-
-```bash
+npm run migrar
 npm run dev
 ```
 
-También se puede usar `npm start` para ejecutarlo sin nodemon.
+La migración manual conserva los IDs y las ventas históricas, y aplica bcrypt a las contraseñas importadas. Se puede reanudar sin duplicar registros. La tienda abre en [http://localhost:4000/](http://localhost:4000/).
 
-Abrí la tienda en [http://localhost:4000/](http://localhost:4000/).
+El panel se abre en `/pages/admin.html`. Para habilitar una cuenta administradora, su documento en la colección `usuarios` debe tener `rol: "admin"` y `activo: true`. El panel permite cargar fotos de productos desde la instalación local.
 
-## Etapa 3 · Tienda y API en un monorepo
+## Arquitectura y mejoras
 
-Express sirve la tienda desde `public/` y la API desde el mismo servidor. La interfaz proviene del [frontend original de Tres Katanas de AW1](https://github.com/rodrigopalacio14/AW1-E-commerce).
-
-1. Explorá el catálogo del inicio o elegí una categoría desde la navegación.
-2. Agregá productos al carrito y ajustá las cantidades según el stock. Podés hacer esto sin iniciar sesión.
-3. Iniciá sesión desde el carrito, ingresá la dirección de entrega y confirmá la compra. La confirmación muestra el número de venta y el total calculado por el servidor.
-
-## Archivos
-
-- `index.js`: configuración e inicio del servidor.
-- `public/`: HTML, CSS, JavaScript, componentes e imágenes de la tienda.
-- `routes/`: rutas de usuarios, productos y ventas.
-- `data/`: archivos JSON. Quedan fuera del directorio público.
-
-## Rutas
-
-| Método | Ruta | Descripción |
-| --- | --- | --- |
-| GET | `/usuarios` | Lista todos los usuarios. |
-| GET | `/usuarios/:id` | Busca un usuario por ID. |
-| POST | `/usuarios/login` | Verifica email y contraseña. |
-| POST | `/usuarios` | Agrega un usuario. |
-| PUT | `/usuarios/:id` | Actualiza un usuario. |
-| DELETE | `/usuarios/:id` | Elimina un usuario si no tiene ventas. |
-| GET | `/productos` | Lista todos los productos. |
-| GET | `/productos/:id` | Busca un producto por ID. |
-| POST | `/productos` | Agrega un producto. |
-| PUT | `/productos/:id` | Actualiza un producto. |
-| GET | `/ventas` | Lista todas las ventas. |
-| GET | `/ventas/:id` | Busca una venta por ID. |
-| POST | `/ventas` | Registra una venta. |
-
-Reemplazar `:id` por el número del registro. Para POST y PUT, enviar el body como JSON con el encabezado `Content-Type: application/json`.
-
-## Ejemplos de body
-
-### POST /usuarios/login
-
-```json
-{
-  "email": "rodrigo.palacio@email.com",
-  "password": "katanas123"
-}
-```
-
-Cuando las credenciales coinciden, responde `200` con el mensaje de bienvenida y los datos que usa la tienda para identificar al comprador.
-
-```json
-{
-  "mensaje": "Bienvenido, Rodrigo.",
-  "usuario": { "id": 1, "nombre": "Rodrigo" }
-}
-```
-
-Si las credenciales son incorrectas, responde `401`. La tienda conserva el ID y el nombre en `sessionStorage`. El servidor no genera sesiones ni tokens en esta etapa.
-
-### POST /usuarios
-
-```json
-{
-  "nombre": "Ana",
-  "apellido": "Perez",
-  "email": "ana.perez@email.com",
-  "password": "practica123",
-  "direccion": "San Martin 100, Rosario",
-  "activo": true
-}
-```
-
-Todos los campos del ejemplo son obligatorios. El ID se asigna automáticamente. No se permiten usuarios con el mismo email.
-
-### PUT /usuarios/3
-
-```json
-{
-  "direccion": "Belgrano 500, Cordoba",
-  "activo": true
-}
-```
-
-Se pueden actualizar nombre, apellido, email, password, direccion y activo. Los campos que no se envían mantienen su valor y el ID no cambia.
-
-### POST /productos
-
-```json
-{
-  "nombre": "Auriculares Bluetooth Mini",
-  "descripcion": "Auriculares inalambricos con estuche de carga.",
-  "categoria": "electronica",
-  "precio": 35000,
-  "stock": 5,
-  "imagen": "auriculares-mini.jpg",
-  "disponible": true
-}
-```
-
-Todos los campos del ejemplo son obligatorios. El precio no puede ser negativo y el stock debe ser un entero mayor o igual a cero. El ID se asigna automáticamente.
-
-### PUT /productos/6
-
-```json
-{
-  "precio": 19000,
-  "stock": 8,
-  "disponible": true
-}
-```
-
-También se pueden actualizar nombre, descripcion, categoria e imagen. Los campos que no se envían mantienen su valor. Cambiar el precio de un producto no modifica las ventas anteriores.
-
-### POST /ventas
-
-```json
-{
-  "id_usuario": 1,
-  "direccion": "Av. Corrientes 1450, CABA",
-  "productos": [
-    { "id_producto": 1, "cantidad": 1 },
-    { "id_producto": 5, "cantidad": 2 }
-  ]
-}
-```
-
-El usuario y los productos deben existir. La venta debe tener al menos un producto y las cantidades deben ser enteros positivos.
-
-El servidor toma los precios del catálogo, calcula el total y agrega el ID, la fecha actual (UTC) y `entregado: false`. La venta se guarda en `ventas.json`. No se descuenta stock.
-
-## Eliminación de usuarios
-
-Antes de eliminar un usuario se revisa si su ID aparece como `id_usuario` en alguna venta. Si tiene ventas relacionadas, se responde `409` y no se elimina. Así no quedan ventas asociadas a usuarios inexistentes.
-
-Con los datos iniciales, `DELETE /usuarios/1` no está permitido porque tiene ventas. `DELETE /usuarios/3` sí está permitido porque no tiene ninguna. No hace falta enviar un body.
-
-## Códigos de respuesta
-
-| Código | Significado |
+| Parte | Responsabilidad |
 | --- | --- |
-| 200 | Operación exitosa. |
-| 201 | Registro creado. |
-| 400 | Datos inválidos o incompletos. |
-| 401 | Email o contraseña incorrectos. |
-| 404 | Usuario, producto o venta no encontrado. |
-| 409 | Email repetido o usuario con ventas relacionadas. |
-| 500 | Error al leer o guardar los datos. |
+| `public/` | Interfaz en HTML, CSS, JavaScript y Bootstrap, basada en la [tienda de AW1](https://github.com/rodrigopalacio14/AW1-E-commerce). |
+| `index.js`, `routes/`, `controllers/` | Express sirve la tienda y la API desde el mismo servidor. nodemon reinicia el servidor durante el desarrollo. |
+| `config/`, `models/` | Mongoose conecta con Atlas y guarda usuarios, catálogo y ventas. Cada venta conserva el precio de sus productos al momento de registrarla. |
+| `middlewares/` | Registro de solicitudes y permisos. jsonwebtoken firma y verifica el JWT de una hora. La API identifica al comprador a partir del token. |
+| `data/`, `scripts/migrar.js` | JSON de origen y migración manual. bcryptjs convierte las contraseñas en hashes al importar, registrar o actualizar una cuenta y las verifica en el login. |
+
+## API
+
+| Método | Ruta | Acceso |
+| --- | --- | --- |
+| `POST` | `/usuarios`, `/usuarios/login` | Público. |
+| `GET` | `/usuarios` | Administrador. |
+| `GET`, `PUT`, `DELETE` | `/usuarios/:id` | Titular o administrador. |
+| `GET` | `/productos`, `/productos/:id` | Público. |
+| `POST` | `/productos` | Administrador. |
+| `PUT`, `DELETE` | `/productos/:id` | Administrador. |
+| `POST` | `/ventas` | Usuario autenticado. |
+| `POST` | `/ventas/admin` | Administrador. |
+| `GET` | `/ventas`, `/ventas/:id` | Administrador. |
+| `PUT`, `DELETE` | `/ventas/:id` | Administrador. |npm

@@ -10,14 +10,14 @@ function crearFooter() {
             <div class="container footer-contenido">
                 <div>
                     <h2>Tres Katanas</h2>
-                    <p>Productos importados: perfumes arabes, electronica y vapers.</p>
+                    <p>Productos importados: perfumes árabes, electrónica y vapers.</p>
                 </div>
 
                 <div class="footer-links">
                     <a class="footer-instagram" href="https://www.instagram.com/treskatanas.imp/" target="_blank" rel="noopener noreferrer">
                         Instagram
                     </a>
-                    <a class="footer-whatsapp" href="https://wa.me/5493764587016" target="_blank" rel="noopener noreferrer">
+                    <a class="footer-whatsapp" href="https://wa.me/${WHATSAPP_TIENDA}" target="_blank" rel="noopener noreferrer">
                         WhatsApp
                     </a>
                 </div>

@@ -10,13 +10,50 @@ function escaparTexto(texto) {
     return nodo.innerHTML;
 }
 
+const categoriasProducto = new Map([
+    ["electronica", "Electrónica"],
+    ["perfumes arabes", "Perfumes árabes"],
+    ["vapers", "Vapers"]
+]);
+
+function claveCategoria(valor) {
+    const clave = valor.trim().toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
+    return clave === "perfumes" ? "perfumes arabes" : clave;
+}
+
 function nombreCategoria(categoria) {
-    const nombres = new Map([
-        ["electronica", "Electrónica"],
-        ["perfumes arabes", "Perfumes árabes"],
-        ["vapers", "Vapers"]
-    ]);
-    return nombres.get(categoria) ?? categoria;
+    return categoriasProducto.get(claveCategoria(categoria)) ?? categoria;
+}
+
+const fotosAW1 = new Map([
+    ["auriculares-prosound-x3.jpg", "accesorios-tech.jfif"],
+    ["smartwatch-fittime-s9.jpg", "accesorios-tech.jfif"],
+    ["perfume-oud-al-malik.jpg", "amber-oud-gold.jpeg"],
+    ["perfume-layali-rose.jpg", "yara-pink.jpeg"],
+    ["vaper-cloudmax-8000.jpg", "vaper-importado-2.jfif"],
+    ["vaper-mint-ice-5000.jpg", "vapers.png"]
+]);
+
+function mostrarImagenProducto(espacio, producto) {
+    const archivo = producto?.imagen?.trim();
+    if (!archivo || !/^(?:cargas\/)?[a-z0-9][a-z0-9._ -]*\.(?:avif|webp|png|jpe?g|jfif|gif)$/i.test(archivo)) return;
+
+    const imagen = document.createElement("img");
+    imagen.className = espacio.className;
+    imagen.classList.remove("sin-imagen");
+    imagen.decoding = "async";
+
+    function cargar(nombre, referencia = false) {
+        imagen.alt = referencia ? `Imagen de referencia para ${producto.nombre}` : producto.nombre;
+        imagen.onload = () => espacio.replaceWith(imagen);
+        imagen.onerror = () => {
+            const alternativa = fotosAW1.get(archivo);
+            if (!referencia && alternativa) cargar(alternativa, true);
+        };
+        imagen.src = `${obtenerBasePath()}img/productos/${nombre.split("/").map(encodeURIComponent).join("/")}`;
+    }
+
+    cargar(archivo);
 }
 
 function crearCardProducto(producto) {
@@ -76,6 +113,7 @@ function renderizarProductos(listaProductos, contenedor) {
     contenedor.innerHTML = listaProductos.map(crearCardProducto).join("");
     contenedor.querySelectorAll("[data-producto-id]").forEach((card, indice) => {
         const producto = listaProductos[indice];
+        mostrarImagenProducto(card.querySelector(".sin-imagen"), producto);
         if (producto.disponible && producto.stock > 0) activarContadores(card, producto);
     });
 }
