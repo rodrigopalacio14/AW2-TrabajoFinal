@@ -52,7 +52,10 @@ router.post("/login", async (req, res) => {
     const usuario = usuarios.find((u) =>
       u.email.toLowerCase() === email.trim().toLowerCase() && u.password === password);
     if (!usuario) return res.status(401).json({ error: "Credenciales incorrectas." });
-    res.status(200).json({ mensaje: `Bienvenido, ${usuario.nombre}.` });
+    res.status(200).json({
+      mensaje: `Bienvenido, ${usuario.nombre}.`,
+      usuario: { id: usuario.id, nombre: usuario.nombre }
+    });
   } catch (error) {
     res.status(500).json({ error: "No se pudo verificar el login." });
   }

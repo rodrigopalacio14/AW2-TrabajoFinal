@@ -1,6 +1,6 @@
 # Tres Katanas
 
-Trabajo práctico de Aplicaciones Web 2 — Segunda etapa.
+Trabajo práctico de Aplicaciones Web 2 — Tercera etapa.
 
 Backend del e-commerce Tres Katanas, desarrollado con Node.js y Express. Los usuarios, productos y ventas se guardan en archivos JSON.
 
@@ -20,13 +20,22 @@ npm run dev
 
 También se puede usar `npm start` para ejecutarlo sin nodemon.
 
-El servidor usa el puerto **4000**: `http://localhost:4000`.
+Abrí la tienda en [http://localhost:4000/](http://localhost:4000/).
+
+## Etapa 3 · Tienda y API en un monorepo
+
+Express sirve la tienda desde `public/` y la API desde el mismo servidor. La interfaz proviene del [frontend original de Tres Katanas de AW1](https://github.com/rodrigopalacio14/AW1-E-commerce).
+
+1. Explorá el catálogo del inicio o elegí una categoría desde la navegación.
+2. Agregá productos al carrito y ajustá las cantidades según el stock. Podés hacer esto sin iniciar sesión.
+3. Iniciá sesión desde el carrito, ingresá la dirección de entrega y confirmá la compra. La confirmación muestra el número de venta y el total calculado por el servidor.
 
 ## Archivos
 
 - `index.js`: configuración e inicio del servidor.
+- `public/`: HTML, CSS, JavaScript, componentes e imágenes de la tienda.
 - `routes/`: rutas de usuarios, productos y ventas.
-- `data/`: archivos JSON. Se movieron desde `array-node/` sin cambiar los datos.
+- `data/`: archivos JSON. Quedan fuera del directorio público.
 
 ## Rutas
 
@@ -59,7 +68,16 @@ Reemplazar `:id` por el número del registro. Para POST y PUT, enviar el body co
 }
 ```
 
-Se usa POST para enviar las credenciales en el body. Si coinciden, devuelve un mensaje de bienvenida; si no, responde `401`. Este login no genera sesiones ni tokens.
+Cuando las credenciales coinciden, responde `200` con el mensaje de bienvenida y los datos que usa la tienda para identificar al comprador.
+
+```json
+{
+  "mensaje": "Bienvenido, Rodrigo.",
+  "usuario": { "id": 1, "nombre": "Rodrigo" }
+}
+```
+
+Si las credenciales son incorrectas, responde `401`. La tienda conserva el ID y el nombre en `sessionStorage`. El servidor no genera sesiones ni tokens en esta etapa.
 
 ### POST /usuarios
 

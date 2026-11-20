@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import express from "express";
 import usuariosRoutes from "./routes/usuarios.routes.js";
 import productosRoutes from "./routes/productos.routes.js";
@@ -7,6 +8,7 @@ const app = express();
 const puerto = 4000;
 
 app.use(express.json());
+app.use(express.static(fileURLToPath(new URL("./public/", import.meta.url))));
 app.use("/usuarios", usuariosRoutes);
 app.use("/productos", productosRoutes);
 app.use("/ventas", ventasRoutes);
